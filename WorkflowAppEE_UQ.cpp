@@ -85,7 +85,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QHostInfo>
 #include <DakotaResultsSampling.h>
 
-#include <GoogleAnalytics.h>
+//#include <GoogleAnalytics.h>
 
 // static pointer for global procedure set in constructor
 static WorkflowAppEE_UQ *theApp = 0;
@@ -448,7 +448,7 @@ WorkflowAppEE_UQ::onRunButtonClicked() {
     theRunWidget->hide();
     theRunWidget->setMinimumWidth(this->width()*0.5);
     theRunWidget->showLocalApplication();
-    GoogleAnalytics::ReportLocalRun();
+    //GoogleAnalytics::ReportLocalRun();
 }
 
 void
@@ -466,7 +466,7 @@ WorkflowAppEE_UQ::onRemoteRunButtonClicked(){
         errorMessage("ERROR - You Need to Login");
     }
 
-    GoogleAnalytics::ReportDesignSafeRun();
+    //GoogleAnalytics::ReportDesignSafeRun();
 }
 
 void

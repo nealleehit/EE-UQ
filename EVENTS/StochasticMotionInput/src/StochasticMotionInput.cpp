@@ -52,6 +52,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "StochasticMotionInput.h"
 #include "VlachosEtAlModel.h"
 #include "DabaghiDerKiureghianPulse.h"
+#include "LiningDiaozeminHandV.h"
 
 StochasticMotionInput::StochasticMotionInput(
     RandomVariablesContainer* random_variables, QWidget* parent)
@@ -68,7 +69,8 @@ StochasticMotionInput::StochasticMotionInput(
   model_selection_ = new QComboBox();
   model_selection_->setObjectName("StochasticLoadingModel");
   model_selection_->addItem(tr("Vlachos et al. (2018)"));
-  model_selection_->addItem(tr("Dabaghi & Der Kiureghian (2018)"));  
+  model_selection_->addItem(tr("Dabaghi & Der Kiureghian (2018)"));
+  model_selection_->addItem(tr("N. Li & Z.M. Diao (2020)"));
   stochastic_model_ = new VlachosEtAlModel(rv_input_widget_, this);
   
   // Add widgets to layouts and layouts to this
@@ -136,6 +138,18 @@ bool StochasticMotionInput::inputFromJSON(QJsonObject& jsonObject) {
       parameters_layout_->addStretch();
       delete temp_model;
       temp_model = nullptr;
+    } else if (app_data["modelName"].toString() ==
+               "N. Li & Z.M. Diao (2020)") {
+      model_selection_->setCurrentText(app_data["modelName"].toString());      
+      // Assign current model to temporary pointer and create new model
+      auto temp_model = stochastic_model_;
+      stochastic_model_ = new LiningDiaozeminHandV(rv_input_widget_, this);
+      stochastic_model_->inputFromJSON(jsonObject);
+      // Replace current widget with new one and delete current one
+      parameters_layout_->replaceWidget(temp_model, stochastic_model_);
+      parameters_layout_->addStretch();
+      delete temp_model;
+      temp_model = nullptr;
     }
   } else {
     result = false;
@@ -165,6 +179,13 @@ bool StochasticMotionInput::outputAppDataToJSON(QJsonObject& jsonObject) {
 
     jsonObject["ApplicationData"] = app_data;
     jsonObject["EventClassification"] = "Earthquake";    
+  } else if (model_selection_->currentText() ==
+             "N. Li & Z.M. Diao (2020)") {
+    app_data.insert("modelName", "LiningDiaozemin");
+    app_data.insert("seed", model_data.value("seed"));
+
+    jsonObject["ApplicationData"] = app_data;
+    jsonObject["EventClassification"] = "Earthquake";    
   } else {
     result = false;
   }
@@ -189,6 +210,14 @@ void StochasticMotionInput::modelSelectionChanged(const QString& model) {
   } else if (model == "Dabaghi & Der Kiureghian (2018)") {
     auto temp_model = stochastic_model_;
     stochastic_model_ = new DabaghiDerKiureghianPulse(rv_input_widget_, this);
+    // Replace current widget with new one and delete current one
+    parameters_layout_->replaceWidget(temp_model, stochastic_model_);
+    parameters_layout_->addStretch();
+    delete temp_model;
+    temp_model = nullptr;
+  } else if (model == "N. Li & Z.M. Diao (2020)") {
+    auto temp_model = stochastic_model_;
+    stochastic_model_ = new LiningDiaozeminHandV(rv_input_widget_, this);
     // Replace current widget with new one and delete current one
     parameters_layout_->replaceWidget(temp_model, stochastic_model_);
     parameters_layout_->addStretch();

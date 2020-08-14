@@ -16,7 +16,7 @@
 #include <QFile>
 #include <QTime>
 #include <QTextStream>
-#include <GoogleAnalytics.h>
+//#include <GoogleAnalytics.h>
 #include <QOpenGLWidget>
 #include <QStandardPaths>
 #include <QDir>
@@ -67,9 +67,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("EE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
     QCoreApplication::setApplicationVersion("2.1.0");
-    GoogleAnalytics::SetTrackingId("UA-126303135-1");
-    GoogleAnalytics::StartSession();
-    GoogleAnalytics::ReportStart();
+    //GoogleAnalytics::SetTrackingId("UA-126303135-1");
+    //GoogleAnalytics::StartSession();
+    //GoogleAnalytics::ReportStart();
 
     //Init resources from static libraries (e.g. SimCenterCommonQt or s3hark)
     Q_INIT_RESOURCE(images1);
@@ -236,7 +236,7 @@ int main(int argc, char *argv[])
     theRemoteService->logout();
     thread->quit();
 
-    GoogleAnalytics::EndSession();
+    //GoogleAnalytics::EndSession();
     // done
     return res;
 }
